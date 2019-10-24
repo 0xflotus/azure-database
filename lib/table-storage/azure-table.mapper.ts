@@ -18,9 +18,7 @@ export interface PartitionRowKeyValues {
 
 export class AzureEntityMapper {
   static serializeAll<E>(entriesDescriptor: azure.TableService.EntityMetadata[]): E[] {
-    return entriesDescriptor.map<E>(entry => {
-      return AzureEntityMapper.serialize<E>(entry);
-    });
+    return entriesDescriptor.map<E>(AzureEntityMapper.serialize);
   }
   static serialize<E>(entryDescriptor: azure.TableService.EntityMetadata) {
     const result = {} as E;

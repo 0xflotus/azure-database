@@ -32,7 +32,7 @@ export interface Repository<T> {
 
   find(rowKey: string, entity: Partial<T>): Promise<T>;
 
-  create(entity: T): Promise<T>;
+  create(entity: T): Promise<T & azure.TableService.EntityMetadata>;
 
   update(rowKey: string, entity: Partial<T>): Promise<T>;
 

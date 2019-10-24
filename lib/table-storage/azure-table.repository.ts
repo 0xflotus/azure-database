@@ -66,6 +66,9 @@ export class AzureTableStorageRepository<T> implements Repository<T> {
       tableQuery,
       currentToken,
     );
+
+    console.log('xxx', result);
+
     const numberOfEntities = (result.entries || []).length;
 
     if (numberOfEntities <= 0) {
@@ -104,7 +107,7 @@ export class AzureTableStorageRepository<T> implements Repository<T> {
     return Object.entries(mappedEntity).length === 0 ? null : mappedEntity;
   }
 
-  async create(entity: T): Promise<T> {
+  async create(entity: T): Promise<T & azure.TableService.EntityMetadata> {
     logger.debug(`Inserting Entity in ${this.tableName}:`);
 
     entity = AzureEntityMapper.createEntity<T>(entity);
@@ -113,9 +116,11 @@ export class AzureTableStorageRepository<T> implements Repository<T> {
 
     const result = await this.manager.insertEntity<T>(this.tableName, entity);
 
-    logger.debug(`Entity stored successfuly`);
+    logger.debug(`Entity ${result['RowKey']} stored successfuly`);
     console.table(result, ['(index)', '$', '_']);
-    return AzureEntityMapper.serialize<T>(result);
+    console.log(result);
+
+    return AzureEntityMapper.serialize<T>(result) as T & azure.TableService.EntityMetadata;
   }
 
   async update(rowKey: string, entity: Partial<T>): Promise<T> {
